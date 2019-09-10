@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<OX>
+    <OXMENU id="navi_rs_company">
+        <MAINMENU id="navi_rs_optimize">
+            <SUBMENU id="navi_rs_optimize_clear_cache" cl="rs_optimize_clear_cache" />
+        </MAINMENU>
+    </OXMENU>
+</OX>
