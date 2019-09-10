@@ -15,6 +15,8 @@ will save in the tmp folder. If you use the suffix "now" it
 will create a new folder for every day. After some time, there
 can be many folders.
 
+This extension was created for Oxid 6.x.
+
 ## Install
 
 1. Add following to composer.json on the shop root
