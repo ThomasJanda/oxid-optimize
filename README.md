@@ -19,7 +19,11 @@ This extension was created for Oxid 6.x.
 
 ## Install
 
-1. Add following to composer.json on the shop root
+1. Copy files into following directory
+
+        source/modules/rs/optimize
+        
+2. Add following to composer.json on the shop root
 
         "autoload": {
             "psr-4": {
@@ -27,12 +31,12 @@ This extension was created for Oxid 6.x.
             }
         },
     
-2. Refresh autoloader files with composer.
+3. Refresh autoloader files with composer.
 
         composer dump-autoload
         
-3. Enable module in the oxid admin area, Extensions => Modules
-4. Changes settings in the module itself
+4. Enable module in the oxid admin area, Extensions => Modules
+5. Changes settings in the module itself
 
 ![](settings.png)
 
