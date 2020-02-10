@@ -272,6 +272,12 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     public function checkScriptSnippets($aSource)
     {
+        if ( ! (bool)$this->getConfig()
+            ->getConfigParam('rs-optimize_active_js')
+        ) {
+            return $aSource;
+        }
+        
         $aNew = [];
         foreach ($aSource as $sKey => $sSource) {
             if ($sSource != "") {

@@ -30,13 +30,19 @@ This extension was created for Oxid 6.x.
                 "rs\\optimize\\": "./source/modules/rs/optimize"
             }
         },
+
+3. Install dependencies
+
+        composer require leafo/scssphp --no-update --igonre-platform-reqs
+        composer require matthiasmullie/minify --no-update --igonre-platform-reqs
+        composer update --no-plugins --no-scripts --no-dev --ignore-platform-reqs
     
-3. Refresh autoloader files with composer.
+4. Refresh autoloader files with composer.
 
         composer dump-autoload
         
-4. Enable module in the oxid admin area, Extensions => Modules
-5. Changes settings in the module itself
+5. Enable module in the oxid admin area, Extensions => Modules
+6. Changes settings in the module itself
 
 ![](settings.png)
 

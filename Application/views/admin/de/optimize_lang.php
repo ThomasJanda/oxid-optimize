@@ -22,6 +22,7 @@ $aLang = array(
     'SHOP_MODULE_rs-optimize_active_db' => 'Active? (All lists will cache in the tmp folder and will never refresh)',
     'SHOP_MODULE_rs-optimize_suffix_db' => 'Suffix ("now" will replace with the current date, create every day a new folder. Tmp-Folder have to clear from time to time.)',
 
+    'navi_rs_company' => 'Reisacher Software',
     'navi_rs_optimize' => 'Optimize',
     'navi_rs_optimize_clear_cache' => 'Clear cache',
 );
