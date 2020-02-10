@@ -33,8 +33,8 @@ This extension was created for Oxid 6.x.
 
 3. Install dependencies
 
-        composer require leafo/scssphp --no-update --igonre-platform-reqs
-        composer require matthiasmullie/minify --no-update --igonre-platform-reqs
+        composer require leafo/scssphp --no-update
+        composer require matthiasmullie/minify --no-update
         composer update --no-plugins --no-scripts --no-dev --ignore-platform-reqs
     
 4. Refresh autoloader files with composer.
