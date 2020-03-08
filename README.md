@@ -17,6 +17,7 @@ can be many folders.
 
 This extension was created for Oxid 6.x.
 
+
 ## Install
 
 1. Copy files into following directory
