@@ -48,6 +48,33 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         }
     }
 
+    /**
+     * check if script from the same domain
+     *
+     * @param type $sUrl
+     * @return boolean
+     */
+    protected function _checkIfSameDomain($sUrl)
+    {
+        $bSame=true;
+        $sUrl = strtolower($sUrl);
+        if(substr($sUrl,0,5)==="http:" || substr($sUrl,0,6)==="https:")
+        {
+            $oConfig = $this->getConfig();
+            $sUrlLocal1 = strtolower(rtrim($oConfig->getShopUrl()??"","/"));
+            $sUrlLocal2 = strtolower(rtrim($oConfig->getSslShopUrl()??"","/"));
+            if(
+                ($sUrlLocal1!=="" && substr($sUrl,0,strlen($sUrlLocal1))!==$sUrlLocal1)
+                &&
+                ($sUrlLocal2!=="" && substr($sUrl,0,strlen($sUrlLocal2))!==$sUrlLocal2)
+                )
+            {
+                $bSame=false;
+            }
+        }
+        return $bSame;
+    }
+
 
 #region "CSS"
 
@@ -72,52 +99,60 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
 
         $sStyleFinish = [];
         foreach ($aStyle as $sUrlSource) {
-            $aFileSuffix = "";
-            if (strpos($sUrlSource, "?") !== false) {
-                $aTmp = explode("?", $sUrlSource);
-                $sUrlSource = $aTmp[0];
-                $aFileSuffix = $aTmp[1];
-
+            
+            if(!$this->_checkIfSameDomain($sUrlSource))
+            {
+                $sUrlTarget=$sUrlSource;
             }
-            $sPathSource = $this->_convertToAbsolutePath($sUrlSource);
-            $sPathTarget = $sPathSource.".".md5($sPathSource).".".$sSuffix;
-            $sUrlTarget = $this->_convertToUrl($sPathTarget);
+            else
+            {
+                $aFileSuffix = "";
+                if (strpos($sUrlSource, "?") !== false) {
+                    $aTmp = explode("?", $sUrlSource);
+                    $sUrlSource = $aTmp[0];
+                    $aFileSuffix = $aTmp[1];
 
-            if ($aFileSuffix != "") {
-                $sUrlTarget .= "?".$aFileSuffix;
-            }
+                }
+                $sPathSource = $this->_convertToAbsolutePath($sUrlSource);
+                $sPathTarget = $sPathSource.".".md5($sPathSource).".".$sSuffix;
+                $sUrlTarget = $this->_convertToUrl($sPathTarget);
 
-            if ( ! file_exists($sPathTarget)) {
-                $aPathInfo = pathinfo($sPathSource);
-                $sSource = file_get_contents($sPathSource);
-
-                //try find old files and delete
-                $aDelList = glob($sPathSource.".*".$this->_getUniqueIdentifier().".css");
-                if(is_array($aDelList))
-                {
-                    foreach($aDelList as $sDelPath)
-                        @unlink($sDelPath);
+                if ($aFileSuffix != "") {
+                    $sUrlTarget .= "?".$aFileSuffix;
                 }
 
-                //compile scss
-                if ($aPathInfo['extension'] == "scss") {
-                    if ((bool)$this->getConfig()
-                        ->getConfigParam('rs-optimize_compile_scss')
-                    ) {
-                        $sSource = $this->_checkStyleScss($sSource, $aPathInfo['dirname']);
+                if ( ! file_exists($sPathTarget)) {
+                    $aPathInfo = pathinfo($sPathSource);
+                    $sSource = file_get_contents($sPathSource);
+
+                    //try find old files and delete
+                    $aDelList = glob($sPathSource.".*".$this->_getUniqueIdentifier().".css");
+                    if(is_array($aDelList))
+                    {
+                        foreach($aDelList as $sDelPath)
+                            @unlink($sDelPath);
                     }
-                }
 
-                //minimize
-                if ((bool)$this->getConfig()
-                    ->getConfigParam('rs-optimize_min_css')
-                ) {
-                    $sSource = $this->_checkStyleMinimize($sSource,
-                        $aPathInfo['dirname']);
-                }
+                    //compile scss
+                    if ($aPathInfo['extension'] == "scss") {
+                        if ((bool)$this->getConfig()
+                            ->getConfigParam('rs-optimize_compile_scss')
+                        ) {
+                            $sSource = $this->_checkStyleScss($sSource, $aPathInfo['dirname']);
+                        }
+                    }
 
-                //save
-                file_put_contents($sPathTarget, $sSource);
+                    //minimize
+                    if ((bool)$this->getConfig()
+                        ->getConfigParam('rs-optimize_min_css')
+                    ) {
+                        $sSource = $this->_checkStyleMinimize($sSource,
+                            $aPathInfo['dirname']);
+                    }
+
+                    //save
+                    file_put_contents($sPathTarget, $sSource);
+                }
             }
 
             $sStyleFinish[] = $sUrlTarget;
@@ -195,6 +230,9 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         ) {
             return $sUrlSource;
         }
+
+        if(!$this->_checkIfSameDomain($sUrlSource))
+            return $sUrlSource;
 
         $sSuffix = trim($this->getConfig()->getConfigParam('rs-optimize_suffix_js'));
         if ($sSuffix == "now") {
