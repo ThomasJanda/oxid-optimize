@@ -10,7 +10,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     protected function _getUniqueIdentifier()
     {
-        return "_".md5(__CLASS__);
+        return "_".md5(__CLASS__)."_RSOPTIMIZED";
     }
 
     /**
