@@ -20,6 +20,9 @@ $aLang = array(
 
     'SHOP_MODULE_GROUP_rs-optimize_main_db' => 'Settings DB',
     'SHOP_MODULE_rs-optimize_active_db' => 'Active? (All lists will cache in the tmp folder and will never refresh)',
+    'SHOP_MODULE_rs-optimize_not_cachable_db' => 'Following classes not cachable. Separate with | (Default: oxorder|oxorderarticles|oxuser|oxuserbasketitem|oxuserbasket|oxuserpayment|oxrecommlist)',
+    'SHOP_MODULE_rs-optimize_only_cachable_ox_db' => 'Only cache object which starts with "ox". Means only the oxid classes.',
+    'SHOP_MODULE_rs-optimize_display_names_in_shop_db' => 'Display object name in shop frontend (Debug mode)',
     'SHOP_MODULE_rs-optimize_suffix_db' => 'Suffix ("now" will replace with the current date, create every day a new folder. Tmp-Folder have to clear from time to time.)',
 
     'navi_rs_company' => 'Reisacher Software',

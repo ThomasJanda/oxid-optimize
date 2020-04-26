@@ -3,7 +3,7 @@
 namespace rs\optimize\Application\Model;
 
 /**
- * Class CategoryList
+ * Class ContentList
  *
  * @see     \OxidEsales\Eshop\Application\Model\ContentList
  */

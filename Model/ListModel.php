@@ -26,11 +26,23 @@ class ListModel extends ListModel_parent
          */
         $oOptimize = oxNew(\rs\optimize\Core\OptimizeDb::class);
         $bDoCache = $oOptimize->shouldCache();
+        if($bDoCache)
+            $bDoCache = $oOptimize->canObjectCache($this->_sObjectsInListName);
 
-        $aNotCachable=['oxorder','oxorderarticles','oxuser'];
-
+        /*
+        $aNotCachable=[
+            'oxorder',
+            'oxorderarticles',
+            'oxuser',
+            'oxuserbasketitem',
+            'oxuserbasket',
+            'oxuserpayment',
+            'oxrecommlist'
+        ];
+        
         if(in_array(strtolower($this->_sObjectsInListName),$aNotCachable))
-            $bDoCache=false;
+           $bDoCache=false;
+         */
 
 
         if ( !$bDoCache) {

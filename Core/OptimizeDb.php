@@ -4,6 +4,54 @@ namespace rs\optimize\Core;
 
 class OptimizeDb extends \OxidEsales\Eshop\Core\Base
 {
+
+    /**
+     * @param string $sObjectInListName
+     * @return boolean
+     */
+    public function canObjectCache($sObjectInListName)
+    {
+        $bDoCache = true;
+        $oConfig = $this->getConfig();
+
+        if((bool) $oConfig->getConfigParam('rs-optimize_display_names_in_shop_db'))
+        {
+            echo "<br>".$sObjectInListName."<br>";
+        }
+
+        $sNotCachable = (string) $oConfig->getConfigParam('rs-optimize_not_cachable_db');
+        $aNotCachable = explode("|",$sNotCachable);
+        $aNotCachable = array_filter($aNotCachable);
+        $aNotCachable = array_map('trim',$aNotCachable);
+        $aNotCachable = array_map('strtolower',$aNotCachable);
+        if(empty($aNotCachable))
+        {
+            $aNotCachable=[
+                'oxorder',
+                'oxorderarticles',
+                'oxuser',
+                'oxuserbasketitem',
+                'oxuserbasket',
+                'oxuserpayment',
+                'oxrecommlist'
+            ];
+        }
+
+        if(in_array(strtolower($sObjectInListName),$aNotCachable))
+           $bDoCache=false;
+
+        if($bDoCache && (bool) $oConfig->getConfigParam('rs-optimize_only_cachable_ox_db'))
+        {
+            if(!substr(strtolower($sObjectInListName),0,2)==="ox")
+            {
+                $bDoCache=false;
+            }
+        }
+        
+        return $bDoCache;
+    }
+    
+    
     /**
      * @return bool
      */

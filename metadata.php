@@ -86,9 +86,28 @@ $aModule = array(
             'value' => '',
         ),
 
+
         array(
             'group' => 'rs-optimize_main_db',
             'name'  => 'rs-optimize_active_db',
+            'type'  => 'bool',
+            'value' => false,
+        ),
+        array(
+            'group' => 'rs-optimize_main_db',
+            'name'  => 'rs-optimize_only_cachable_ox_db',
+            'type'  => 'bool',
+            'value' => true,
+        ),
+        array(
+            'group' => 'rs-optimize_main_db',
+            'name'  => 'rs-optimize_not_cachable_db',
+            'type'  => 'str',
+            'value' => 'oxorder|oxorderarticles|oxuser|oxuserbasketitem|oxuserbasket|oxuserpayment|oxrecommlist',
+        ),
+        array(
+            'group' => 'rs-optimize_main_db',
+            'name'  => 'rs-optimize_display_names_in_shop_db',
             'type'  => 'bool',
             'value' => false,
         ),
