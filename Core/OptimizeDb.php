@@ -11,7 +11,9 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
      */
     public function canObjectCache($sObjectInListName)
     {
-        $bDoCache = true;
+        //echo $sObjectInListName."<br>";
+        $bDoCache1 = false;
+        $bDoCache2 = false;
         $oConfig = $this->getConfig();
 
         if((bool) $oConfig->getConfigParam('rs-optimize_display_names_in_shop_db'))
@@ -33,25 +35,41 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
                 'oxuserbasketitem',
                 'oxuserbasket',
                 'oxuserpayment',
-                'oxrecommlist'
+                'oxrecommlist',
+                'oxreview'
             ];
         }
 
-        if(in_array(strtolower($sObjectInListName),$aNotCachable))
-           $bDoCache=false;
+        if(!in_array(strtolower($sObjectInListName),$aNotCachable))
+           $bDoCache1=true;
 
-        if($bDoCache && (bool) $oConfig->getConfigParam('rs-optimize_only_cachable_ox_db'))
+        if($bDoCache1)
         {
-            if(!substr(strtolower($sObjectInListName),0,2)==="ox")
+            if((bool) $oConfig->getConfigParam('rs-optimize_only_cachable_ox_db'))
             {
-                $bDoCache=false;
+                if(substr(strtolower($sObjectInListName),0,2)==="ox")
+                {
+                    $bDoCache2=true;
+                }
             }
+            else
+                $bDoCache2=true;
         }
-        
+
+
+        $bDoCache = ($bDoCache1 && $bDoCache2) === true;
+        if((bool) $oConfig->getConfigParam('rs-optimize_display_names_in_shop_db'))
+        {
+            if($bDoCache)
+                echo "CACHE<br>";
+            else
+                echo "NO CACHE<br>";
+        }
+
         return $bDoCache;
     }
-    
-    
+
+
     /**
      * @return bool
      */
