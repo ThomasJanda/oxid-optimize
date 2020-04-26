@@ -249,13 +249,9 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
 
         }
 
-        //echo $sUrlSource."<br>";
         $sPathSource = $this->_convertToAbsolutePath($sUrlSource);
-        //echo $sPathSource."<br>";
         $sPathTarget = $sPathSource.".".md5($sPathSource).".".$sSuffix;
-        //echo $sPathTarget."<br>";
         $sUrlTarget = $this->_convertToUrl($sPathTarget);
-        //echo $sUrlTarget."<br>";
 
         if ($aFileSuffix != "") {
             $sUrlTarget .= "?".$aFileSuffix;
