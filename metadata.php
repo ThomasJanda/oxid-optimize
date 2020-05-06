@@ -103,7 +103,7 @@ $aModule = array(
             'group' => 'rs-optimize_main_db',
             'name'  => 'rs-optimize_not_cachable_db',
             'type'  => 'str',
-            'value' => 'oxorder|oxorderarticles|oxuser|oxuserbasketitem|oxuserbasket|oxuserpayment|oxrecommlist',
+            'value' => 'oxreview|oxorder|oxorderarticles|oxuser|oxuserbasketitem|oxuserbasket|oxuserpayment|oxrecommlist',
         ),
         array(
             'group' => 'rs-optimize_main_db',
