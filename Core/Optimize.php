@@ -8,9 +8,15 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     /**
      * @return string
      */
-    protected function _getUniqueIdentifier()
+    protected function _getUniqueIdentifier($bViewClass=true)
     {
-        return "_".md5(__CLASS__)."_RSOPTIMIZED";
+        $sName = "_".md5(__CLASS__)."_RSOPTIMIZED";
+        if($bViewClass)
+        {
+            $sName = "_".reset($this->getConfig()->getActiveViewsIds()).$sName;
+        }
+        
+        return $sName;
     }
 
     /**
@@ -85,8 +91,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     public function checkStyle($aStyle)
     {
-        if ( ! (bool)$this->getConfig()
-            ->getConfigParam('rs-optimize_active_css')
+        if ( ! (bool)$this->getConfig()->getConfigParam('rs-optimize_active_css')
         ) {
             return $aStyle;
         }
@@ -97,31 +102,72 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         }
         $sSuffix.= $this->_getUniqueIdentifier().".css";
 
+        
+        //groups
+        $GroupsTmp=[];
+        $Groups = $this->getConfig()->getConfigParam('rs-optimize_group_css');
+        if(!is_array($Groups))
+        {
+            $Groups = [];
+        }
+        foreach($Groups as $Group)
+        {
+            if(strpos($Group,"|")!==false)
+            {
+                $tmp = explode("|",$Group);
+                $i=[];
+                $i['source']="";
+                $GroupsTmp[$tmp[0]]['files'][md5(trim($tmp[1]))]=$i;
+                
+                $GroupsTmp[$tmp[0]]['settings']['path'] = $this->getConfig()->getConfigParam('sShopDir')."out/".$tmp[0].$this->_getUniqueIdentifier(true).".css";
+                $GroupsTmp[$tmp[0]]['settings']['url'] = $this->_convertToUrl($GroupsTmp[$tmp[0]]['settings']['path']);
+            }
+        }
+        
+        
         $sStyleFinish = [];
         foreach ($aStyle as $sUrlSource) {
             
             if(!$this->_checkIfSameDomain($sUrlSource))
             {
                 $sUrlTarget=$sUrlSource;
+                $sStyleFinish[] = $sUrlTarget;
             }
             else
             {
+                //create urls/path...
                 $aFileSuffix = "";
                 if (strpos($sUrlSource, "?") !== false) {
                     $aTmp = explode("?", $sUrlSource);
                     $sUrlSource = $aTmp[0];
                     $aFileSuffix = $aTmp[1];
-
                 }
+                
                 $sPathSource = $this->_convertToAbsolutePath($sUrlSource);
                 $sPathTarget = $sPathSource.".".md5($sPathSource).".".$sSuffix;
                 $sUrlTarget = $this->_convertToUrl($sPathTarget);
+                $sPathShopRoot = substr($sPathSource,strlen($this->getConfig()->getConfigParam('sShopDir')));
 
                 if ($aFileSuffix != "") {
                     $sUrlTarget .= "?".$aFileSuffix;
                 }
+                
+                //test if it is in a group or the file exists
+                $HasGroup = false;
+                $GroupNameTmp="";
+                foreach($GroupsTmp as $key=>$item)
+                {
+                    if(isset($item['files'][md5($sPathShopRoot)]))
+                    {
+                        $GroupNameTmp=$key;
+                        $HasGroup=true;
+                        break;
+                    }
+                }
 
-                if ( ! file_exists($sPathTarget)) {
+
+                //test if file present, if not, create
+                if ((!$HasGroup && !file_exists($sPathTarget)) || ($HasGroup && isset($GroupsTmp[$GroupNameTmp]['settings']['path'])  && !file_exists($GroupsTmp[$GroupNameTmp]['settings']['path']))) {
                     $aPathInfo = pathinfo($sPathSource);
                     $sSource = file_get_contents($sPathSource);
 
@@ -143,22 +189,49 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                     }
 
                     //minimize
-                    if ((bool)$this->getConfig()
+                    if((bool)$this->getConfig()
                         ->getConfigParam('rs-optimize_min_css')
                     ) {
                         $sSource = $this->_checkStyleMinimize($sSource,
                             $aPathInfo['dirname']);
                     }
 
-                    //save
-                    file_put_contents($sPathTarget, $sSource);
+                    
+                    //test if it is in a group
+                    if($HasGroup)
+                    {
+                        $GroupsTmp[$GroupNameTmp]['files'][md5($sPathShopRoot)]['source']=$sSource;
+                    }
+                    else
+                    {
+                        //save
+                        file_put_contents($sPathTarget, $sSource);
+                        $sStyleFinish[] = $sUrlTarget;
+                    }
                 }
             }
-
-            $sStyleFinish[] = $sUrlTarget;
         }
-
-        return $sStyleFinish;
+        
+        
+        //combine groups and save it into the tmp folder
+        $sStyleFinishGroup = [];
+        foreach($GroupsTmp as $Group)
+        {
+            if(!file_exists($Group['settings']['path']))
+            {
+                $Source = "";
+                foreach($Group['files'] as $k => $v)
+                {
+                    $Source.=$v['source']."\n\n";
+                }
+                file_put_contents($Group['settings']['path'], $Source);
+            
+            }
+            $sStyleFinishGroup[] = $Group['settings']['url'];
+        }
+        
+        
+        return array_merge($sStyleFinishGroup, $sStyleFinish);
     }
 
 

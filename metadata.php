@@ -42,6 +42,7 @@ $aModule = array(
             'type'  => 'bool',
             'value' => false,
         ),
+        
         array(
             'group' => 'rs-optimize_main_css',
             'name'  => 'rs-optimize_active_css',
@@ -66,7 +67,13 @@ $aModule = array(
             'type'  => 'str',
             'value' => '',
         ),
-
+        array(
+            'group' => 'rs-optimize_main_css',
+            'name'  => 'rs-optimize_group_css',
+            'type'  => 'arr',
+            'value' => [],
+        ),
+        
         array(
             'group' => 'rs-optimize_main_js',
             'name'  => 'rs-optimize_active_js',
