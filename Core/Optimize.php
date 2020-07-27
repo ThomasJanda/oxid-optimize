@@ -15,7 +15,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     /**
      * @return string
      */
-    protected function _getUniqueIdentifier($bViewClass=true)
+    protected function _getUniqueIdentifier($bViewClass=false)
     {
         $sName = "_".md5(__CLASS__)."_RSOPTIMIZED";
         if($bViewClass)
@@ -26,7 +26,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
 
         return $sName;
     }
-    
+
     protected function _deleteOldFiles($pattern)
     {
         $aDelList = glob($pattern);
@@ -134,8 +134,12 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                     $e = strtolower(substr($path,strlen($path)-4));
                     if($e===".png" || $e===".gif" || $e===".jpg")
                     {
-                        $data = $this->_data_uri($path,mime_content_type($path));
-                        return str_replace($match[1], $data, $match[0]);
+                        //if file exists and file size < 10 kb
+                        if(file_exists($path) && filesize($path) < (10 * 1024))
+                        {
+                            $data = $this->_data_uri($path,mime_content_type($path));
+                            return str_replace($match[1], $data, $match[0]);
+                        }
                     }
                 }
                 return $match[0];
@@ -201,7 +205,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     {
         if (
                 ((bool) $this->getConfig()->isAdmin() && !(bool)$this->getConfig()->getConfigParam('rs-optimize_min_css_admin'))
-                || 
+                ||
                 ! (bool)$this->getConfig()->getConfigParam('rs-optimize_active_css')
         ) {
             return $aStyle;
@@ -268,6 +272,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                     $aGroups[$iGroupIndex]['settings']['group']=false;
                     $aGroups[$iGroupIndex]['settings']['path']=$sPathTarget;
                     $aGroups[$iGroupIndex]['settings']['url']=$sUrlTarget;
+                    $iGroupIndex++;
                 }
             }
         }
@@ -290,9 +295,9 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                     $tmp.=$sGroupName."*".$sSuffixGroup;
                 else
                     $tmp.=$sGroupName."*".$sSuffixFile;
-                
+
                 $this->_deleteOldFiles($tmp);
-                
+
                 file_put_contents($aGroup['settings']['path'], implode("\n",$sSource));
             }
         }
