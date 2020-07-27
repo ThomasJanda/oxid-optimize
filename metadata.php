@@ -63,6 +63,18 @@ $aModule = array(
         ),
         array(
             'group' => 'rs-optimize_main_css',
+            'name'  => 'rs-optimize_min_css_image',
+            'type'  => 'bool',
+            'value' => false,
+        ),
+        array(
+            'group' => 'rs-optimize_main_css',
+            'name'  => 'rs-optimize_min_css_admin',
+            'type'  => 'bool',
+            'value' => false,
+        ),
+        array(
+            'group' => 'rs-optimize_main_css',
             'name'  => 'rs-optimize_suffix_css',
             'type'  => 'str',
             'value' => '',
