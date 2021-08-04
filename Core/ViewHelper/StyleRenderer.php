@@ -12,6 +12,7 @@ class StyleRenderer extends StyleRenderer_parent
 {
     protected function formStylesOutput($styles)
     {
+        /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
         $oOptimize = oxNew(\rs\optimize\Core\Optimize::class);
         $styles = $oOptimize->checkStyle($styles);
 

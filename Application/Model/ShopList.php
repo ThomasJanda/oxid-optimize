@@ -23,6 +23,7 @@ class ShopList extends ShopList_parent
         /**
          * @var \OxidEsales\Eshop\Core\Config          $oConfig
          * @var \OxidEsales\Eshop\Core\Model\ListModel $this
+         * @var \rs\optimize\Core\OptimizeDb $oOptimize
          */
         $oOptimize = oxNew(\rs\optimize\Core\OptimizeDb::class);
         $bDoCache = $oOptimize->shouldCache();

@@ -12,6 +12,7 @@ class ContentList extends ContentList_parent
 
     protected function _loadFromDb($iType)
     {
+        /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
         $oOptimize = oxNew(\rs\optimize\Core\OptimizeDb::class);
         $bDoCache = $oOptimize->shouldCache();
 

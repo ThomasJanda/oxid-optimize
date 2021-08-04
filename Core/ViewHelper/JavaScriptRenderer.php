@@ -12,6 +12,7 @@ class JavaScriptRenderer extends JavaScriptRenderer_parent
 {
     protected function formFilesOutput($includes, $widget)
     {
+        /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
         $oOptimize = oxNew(\rs\optimize\Core\Optimize::class);
         $includes = $oOptimize->checkScripts($includes);
 
@@ -20,6 +21,7 @@ class JavaScriptRenderer extends JavaScriptRenderer_parent
 
     protected function formSnippetsOutput($scripts, $widgetName, $ajaxRequest)
     {
+        /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
         $oOptimize = oxNew(\rs\optimize\Core\Optimize::class);
         $scripts = $oOptimize->checkScriptSnippets($scripts);
 

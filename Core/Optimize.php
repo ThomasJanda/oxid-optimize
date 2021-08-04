@@ -20,7 +20,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         $sName = "_".md5(__CLASS__)."_RSOPTIMIZED";
         if($bViewClass)
         {
-            $ids = $this->getConfig()->getActiveViewsIds();
+            $ids = \OxidEsales\Eshop\Core\Registry::getConfig()->getActiveViewsIds();
             $sName = "_".reset($ids).$sName;
         }
 
@@ -44,7 +44,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     protected function _convertToAbsolutePath($sUrl)
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sTmp = $sUrl;
         $sTmp = str_replace($oConfig->getShopUrl(), "", $sTmp);
@@ -60,7 +60,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     protected function _convertToUrl($sPath)
     {
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sTmp = $sPath;
         $sTmp = str_replace($oConfig->getConfigParam('sShopDir'), "", $sTmp);
@@ -84,7 +84,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         $sUrl = strtolower($sUrl);
         if(substr($sUrl,0,5)==="http:" || substr($sUrl,0,6)==="https:")
         {
-            $oConfig = $this->getConfig();
+            $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
             $sUrlLocal1 = strtolower(rtrim($oConfig->getShopUrl()??"","/"));
             $sUrlLocal2 = strtolower(rtrim($oConfig->getSslShopUrl()??"","/"));
             if(
@@ -117,14 +117,14 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
 
         //compile scss
         if ($aPathInfo['extension'] == "scss") {
-            if ((bool)$this->getConfig()
+            if ((bool)\OxidEsales\Eshop\Core\Registry::getConfig()
                 ->getConfigParam('rs-optimize_compile_scss')
             ) {
                 $sSource = $this->_checkStyleScss($sSource, $aPathInfo['dirname']);
             }
         }
 
-        if((bool)$this->getConfig()->getConfigParam('rs-optimize_min_css_image'))
+        if((bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_min_css_image'))
         {
             $reg = "/(?:url\()(?!['\"]?(?:data|http))['\"]?([^'\"\)\s>]+)/";
             $sSource = preg_replace_callback($reg,function($match) use ($aPathInfo) {
@@ -148,7 +148,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
 
 
         //minimize
-        if((bool)$this->getConfig()->getConfigParam('rs-optimize_min_css')
+        if((bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_min_css')
         ) {
             $sSource = $this->_checkStyleMinimize($sSource,
                 $aPathInfo['dirname']);
@@ -165,7 +165,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     protected function _getGroups($Suffix)
     {
         //group logic
-        $Groups = $this->getConfig()->getConfigParam('rs-optimize_group_css');
+        $Groups = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_group_css');
         if(!is_array($Groups))
             $Groups = [];
 
@@ -183,7 +183,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                     if(!isset($tmpGroups[$GroupName]))
                     {
                         $tmpGroups[$GroupName]['settings']['group'] = true;
-                        $tmpGroups[$GroupName]['settings']['path'] = $this->getConfig()->getConfigParam('sShopDir')."out/".$GroupName.$Suffix;
+                        $tmpGroups[$GroupName]['settings']['path'] = \OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sShopDir')."out/".$GroupName.$Suffix;
                         $tmpGroups[$GroupName]['settings']['url'] = $this->_convertToUrl($tmpGroups[$GroupName]['settings']['path']);
                     }
                     $tmpGroups[$GroupName]['files'][]=$File;
@@ -204,14 +204,14 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     public function checkStyle($aStyle)
     {
         if (
-                ((bool) $this->getConfig()->isAdmin() && !(bool)$this->getConfig()->getConfigParam('rs-optimize_min_css_admin'))
+                ((bool) \OxidEsales\Eshop\Core\Registry::getConfig()->isAdmin() && !(bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_min_css_admin'))
                 ||
-                ! (bool)$this->getConfig()->getConfigParam('rs-optimize_active_css')
+                ! (bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_active_css')
         ) {
             return $aStyle;
         }
 
-        $sSuffix = trim($this->getConfig()->getConfigParam('rs-optimize_suffix_css'));
+        $sSuffix = trim(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_suffix_css'));
         if ($sSuffix == "now") {
             $sSuffix = time();
         }
@@ -243,13 +243,13 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
                 $sPathSource = $this->_convertToAbsolutePath($sUrlSource);
                 $sPathTarget = $sPathSource.".".md5($sPathSource).".".$sSuffix.$sSuffixFile;
                 $sUrlTarget = $this->_convertToUrl($sPathTarget);
-                $sPathShopRoot = substr($sPathSource,strlen($this->getConfig()->getConfigParam('sShopDir')));
+                $sPathShopRoot = substr($sPathSource,strlen(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('sShopDir')));
 
                 //test if it is in a group
                 $bFound = false;
                 foreach($aGroups as $sGroupName => $aGroup)
                 {
-                    if(in_array($sPathShopRoot, $aGroup['files']))
+                    if(is_array($aGroup['files']) && in_array($sPathShopRoot, $aGroup['files']))
                     {
                         $item=[];
                         $item['pathSource']=$sPathSource;
@@ -371,6 +371,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     {
         $sStyleFinish = [];
         foreach ($aScript as $prio => $aUrlSource) {
+            /** @var array $aUrlSource */
             foreach ($aUrlSource as $sUrlSource) {
                 $sUrlTarget = $this->checkScriptFile($sUrlSource);
                 $sStyleFinish[$prio][] = $sUrlTarget;
@@ -388,7 +389,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
     public function checkScriptFile($sUrlSource)
     {
 
-        if ( ! (bool)$this->getConfig()
+        if ( ! (bool)\OxidEsales\Eshop\Core\Registry::getConfig()
             ->getConfigParam('rs-optimize_active_js')
         ) {
             return $sUrlSource;
@@ -397,7 +398,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
         if(!$this->_checkIfSameDomain($sUrlSource))
             return $sUrlSource;
 
-        $sSuffix = trim($this->getConfig()->getConfigParam('rs-optimize_suffix_js'));
+        $sSuffix = trim(\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_suffix_js'));
         if ($sSuffix == "now") {
             $sSuffix = time();
         }
@@ -429,7 +430,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
             $this->_deleteOldFiles($pattern);
 
             //minimize
-            if ((bool)$this->getConfig()->getConfigParam('rs-optimize_min_js')) {
+            if ((bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_min_js')) {
                 $sSource = $this->_checkJsMinimize($sSource,
                     $aPathInfo['dirname']);
             }
@@ -465,7 +466,7 @@ class Optimize extends \OxidEsales\Eshop\Core\Base
      */
     public function checkScriptSnippets($aSource)
     {
-        if ( ! (bool)$this->getConfig()
+        if ( ! (bool)\OxidEsales\Eshop\Core\Registry::getConfig()
             ->getConfigParam('rs-optimize_active_js')
         ) {
             return $aSource;

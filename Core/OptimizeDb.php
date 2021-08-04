@@ -14,7 +14,7 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
         //echo $sObjectInListName."<br>";
         $bDoCache1 = false;
         $bDoCache2 = false;
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         if((bool) $oConfig->getConfigParam('rs-optimize_display_names_in_shop_db'))
         {
@@ -76,7 +76,7 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
     public function shouldCache()
     {
         $bDoCache = true;
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
         if ($oConfig->isAdmin()) {
             $bDoCache = false;
         }
@@ -103,7 +103,7 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
         /**
          * @var \OxidEsales\Eshop\Core\Config $oConfig
          */
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sPath = $oConfig->getConfigParam('sCompileDir')."rs-optimize";
         @mkdir($sPath);
@@ -118,7 +118,7 @@ class OptimizeDb extends \OxidEsales\Eshop\Core\Base
         /**
          * @var \OxidEsales\Eshop\Core\Config $oConfig
          */
-        $oConfig = $this->getConfig();
+        $oConfig = \OxidEsales\Eshop\Core\Registry::getConfig();
 
         $sSuffix = $oConfig->getConfigParam('rs-optimize_suffix_db');
         if($sSuffix == "now")

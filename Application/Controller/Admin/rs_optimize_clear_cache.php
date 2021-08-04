@@ -18,6 +18,7 @@ class rs_optimize_clear_cache extends \OxidEsales\Eshop\Application\Controller\A
         {
             $aList = [];
 
+            /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
             $oOptimize = oxNew(\rs\optimize\Core\OptimizeDb::class);
             $sPath = $oOptimize->getCacheDirectory();
 

@@ -17,6 +17,7 @@ class CategoryList extends CategoryList_parent
      */
     protected function _loadFromDb()
     {
+        /** @var \rs\optimize\Core\OptimizeDb $oOptimize */
         $oOptimize = oxNew(\rs\optimize\Core\OptimizeDb::class);
         $bDoCache = $oOptimize->shouldCache();
 

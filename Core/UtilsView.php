@@ -13,7 +13,7 @@ class UtilsView extends UtilsView_parent
     {
         $oSmarty = parent::getSmarty($blReload);
 
-        if ((bool)$this->getConfig()->getConfigParam('rs-optimize_minimize_html'))
+        if ((bool)\OxidEsales\Eshop\Core\Registry::getConfig()->getConfigParam('rs-optimize_minimize_html'))
         {
             $oSmarty->load_filter('output', 'trimwhitespace');
         }
